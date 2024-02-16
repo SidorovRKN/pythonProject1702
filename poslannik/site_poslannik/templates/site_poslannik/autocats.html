@@ -1,0 +1,9 @@
+<nav>
+    {% for cat in cats %}
+    {% if cat.id == cat_selected %}
+    <span class="selected">{{ cat.title }}</span>
+    {% else %}
+    <a href="{% url 'category' cat.id %}">{{ cat.title }}</a>
+    {% endif %}
+    {% endfor %}
+</nav>

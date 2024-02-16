@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load poslannik_tags %}
+{% block content %}
+<ul>
+    {% for p in parts %}
+    {% if p.is_published %}
+    <li>
+        <h2>{{ p.title }}</h2>
+        <p>{{ p.content }}</p>
+        <p><a href="{%url 'part' p.id%}">Заказать</a> </p>
+        {% if not forloop.last %}
+        <hr>
+        {%endif%}
+    </li>
+    {%endif%}
+    {% endfor %}
+</ul>
+{% endblock %}

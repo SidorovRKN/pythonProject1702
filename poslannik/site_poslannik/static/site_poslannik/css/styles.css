@@ -1,0 +1,51 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 1;
+    padding: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: #007bff; /* Цвет ссылок можно изменить по желанию */
+}
+
+a:hover {
+    text-decoration: underline;
+}
+h1 {
+    color: #333;
+    font-size: 24px;
+    margin-top: 0; /* убирает стандартный отступ у h1 */
+}
+
+li {
+    margin-bottom: 20px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background: #ccc;
+    margin: 20px 0;
+}
+/* Дополнительные стили для title */
+
+.title {
+    text-align: center;
+    margin-top: 20px; /* регулирует отступ сверху */
+}
+
+.selected {
+    color: #333; /* Цвет текста для выбранной категории */
+    pointer-events: none; /* Делает элемент не кликабельным */
+    cursor: default; /* Меняет курсор на стандартный */
+}
+/* Стили для index.html и about.html */
+
+
