@@ -65,7 +65,7 @@ def archive(request, year):
     if year > 2023:
         uri = reverse('cats_slug', args=('bebracat2000',))
         return redirect(uri)
-    return HttpResponse(f'In {year} year...  {str(type(year)).strip('<>')}')
+    return HttpResponse(f'In {year} year... ')
 
 
 def page_not_found(request, exception):
