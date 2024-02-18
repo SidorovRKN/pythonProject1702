@@ -1,8 +1,10 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.template.loader import render_to_string
+
+from site_poslannik.models import Parts
 
 # Create your views here.
 menu = [
@@ -30,7 +32,7 @@ def index(request):
     data = {
         'title': 'Автозапчасти в Борисове',
         'menu': menu,
-        'parts': data_db,
+        'parts': Parts.objects.all(),
         'cat_selected': 0,
     }
     return render(request, 'site_poslannik/index.html', context=data)
@@ -45,7 +47,16 @@ def contact(request):
 
 
 def show_part(request, part_id):
-    return HttpResponse(f'Запчасть {part_id}')
+    part = get_object_or_404(Parts, pk=part_id)
+
+    data = {
+        'name': part.name,
+        'menu': menu,
+        'part': part,
+        'cat_selected': 1,
+    }
+
+    return render(request, 'site_poslannik/part.html', context=data)
 
 
 def about(request):
