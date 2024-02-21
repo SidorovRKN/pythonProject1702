@@ -14,25 +14,22 @@ menu = [
 
 ]
 
-data_db = [
-    {"id": 1, 'title': 'ГАЗ', 'content': 'Двигатели', 'is_published': True},
-    {"id": 2, 'title': 'УАЗ', 'content': 'Колеса', 'is_published': True},
-    {"id": 3, 'title': 'ВАЗ', 'content': 'Коленвалы', 'is_published': True},
-]
 
 cats_db = [
-    {"id": 3, 'title': "Запчасти на ВАЗ"},
-    {"id": 2, 'title': "Запчасти на УАЗ"},
     {"id": 1, 'title': "Запчасти на ГАЗ"},
+    {"id": 2, 'title': "Запчасти на УАЗ"},
+    {"id": 3, 'title': "Запчасти на ВАЗ"},
 
 ]
 
+
+PARTS = Parts.objects.all()
 
 def index(request):
     data = {
         'title': 'Автозапчасти в Борисове',
         'menu': menu,
-        'parts': Parts.objects.all(),
+        'parts': PARTS,
         'cat_selected': 0,
     }
     return render(request, 'site_poslannik/index.html', context=data)
@@ -43,13 +40,20 @@ def login(request):
 
 
 def contact(request):
-    return HttpResponse('<h1>Контакты: 80-177-76-36-02</h1>')
+    data = {
+        'title': 'Контакты для заказа',
+        'num': '76-36-02',
+        'menu': menu,
+        'email': 'some_email@gmail.com',
+    }
+    return render(request, 'site_poslannik/contact.html', context=data)
 
 
 def show_part(request, part_id):
     part = get_object_or_404(Parts, pk=part_id)
 
     data = {
+        'title': f'{part.name}',
         'name': part.name,
         'menu': menu,
         'part': part,
@@ -64,8 +68,10 @@ def about(request):
 
 
 def cats(request, cat_id):
+    cat_title = cats_db[cat_id-1]['title']
     data = {
-        'parts': data_db,
+        'title': f'{cat_title}',
+        'parts': PARTS,
         'menu': menu,
         'cat_selected': cat_id,
     }

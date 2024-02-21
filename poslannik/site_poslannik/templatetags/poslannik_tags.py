@@ -10,6 +10,6 @@ def get_categories():
 
 
 @register.inclusion_tag('site_poslannik/autocats.html')
-def show_categories(cat_selected=0):
+def show_categories(cat_selected):
     cats = views.cats_db
     return {'cats': cats, 'cat_selected': cat_selected}
