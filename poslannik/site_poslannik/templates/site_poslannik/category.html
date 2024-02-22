@@ -2,16 +2,14 @@
 {% block content %}
 <ul>
     {% for p in parts %}
-    {% if p.category == cat_selected %}
     <li>
         <h2>{{ p.name }}</h2>
         <p>{{ p.descr }}</p>
-        <p><a href="{%url 'part' p.code%}">Заказать</a> </p>
+        <p><a href="{{ p.get_absolute_url }}">Заказать</a> </p>
         {% if not forloop.last %}
         <hr>
         {%endif%}
     </li>
-    {%endif%}
     {% endfor %}
 </ul>
 {% endblock %}

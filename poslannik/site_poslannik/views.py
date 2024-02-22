@@ -4,7 +4,8 @@ from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.template.loader import render_to_string
 
-from site_poslannik.models import Parts
+from site_poslannik.models import Parts, Category
+
 
 # Create your views here.
 menu = [
@@ -29,7 +30,7 @@ def index(request):
     data = {
         'title': 'Автозапчасти в Борисове',
         'menu': menu,
-        'parts': PARTS,
+        'parts': PARTS[:20],
         'cat_selected': 0,
     }
     return render(request, 'site_poslannik/index.html', context=data)
@@ -49,8 +50,8 @@ def contact(request):
     return render(request, 'site_poslannik/contact.html', context=data)
 
 
-def show_part(request, part_id):
-    part = get_object_or_404(Parts, pk=part_id)
+def show_part(request, part_slug):
+    part = get_object_or_404(Parts, slug=part_slug)
 
     data = {
         'title': f'{part.name}',
@@ -67,13 +68,14 @@ def about(request):
     return render(request, 'site_poslannik/about.html', {'title': 'О нас', 'menu': menu})
 
 
-def cats(request, cat_id):
-    cat_title = cats_db[cat_id-1]['title']
+def cats(request, cat_slug):
+    selected = Category.objects.filter(slug=cat_slug)[0]
+    # parts = Parts.objects.filter(category=selected)[:20]
     data = {
-        'title': f'{cat_title}',
-        'parts': PARTS,
+        'title': f'{selected.name}',
+        'parts': selected.parts_set.all(),
         'menu': menu,
-        'cat_selected': cat_id,
+        'cat_selected': cat_slug,
     }
     return render(request, 'site_poslannik/category.html', context=data)
 
