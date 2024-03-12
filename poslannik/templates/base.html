@@ -1,5 +1,4 @@
 {% load static %}
-{% load poslannik_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,16 +11,32 @@
     <div class="title">
         <h1>{{ title }}</h1>
     </div>
-    {% show_categories cat_slug %}
-    <ul>
-        <li><a href="{% url 'home' %}">Главная</a></li>
-        {% for i in menu %}
-        {% if not forloop.last %}<li>{%else%}<li class="last">{%endif%}
-        <p><a href="{% url i.url_name %}">{{i.title}}</a></p>
-        </li>
-        {%endfor%}
-    </ul>
+    <form class="search" action="{% url 'search' %}" method="GET">
+        <input type="text" name="q" placeholder="Поиск...">
+        <button type="submit">Найти</button>
+    </form>
 
-{% block content %} {% endblock %}
+    <nav class="categories">
+        {% for cat in cats %}
+            {% if cat.slug == cat_selected %}
+                <span class="selected">{{ cat.name }}</span>
+            {% else %}
+                <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
+            {% endif %}
+        {% endfor %}
+    </nav>
+
+    <div class="navigation">
+        <ul>
+            <li><a href="{% url 'home' %}">Главная</a></li>
+            {% for i in menu %}
+                {% if not forloop.last %}<li>{%else%}<li class="last">{%endif%}
+                <p><a href="{% url i.url_name %}">{{i.title}}</a></p>
+                </li>
+            {%endfor%}
+        </ul>
+    </div>
+<div class="content">{% block content %} {% endblock %}
+</div>
 </body>
 </html>

@@ -20,7 +20,8 @@ from site_poslannik import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('site_poslannik.urls'))
+    path('__debug__/', include("debug_toolbar.urls")),
+    path('', include('site_poslannik.urls')),
 ]
 
 handler404 = views.page_not_found

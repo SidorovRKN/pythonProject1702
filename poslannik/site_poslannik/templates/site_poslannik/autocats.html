@@ -1,9 +1,0 @@
-<nav>
-    {% for cat in cats %}
-    {% if cat.slug == cat_selected %}
-    <span class="selected">{{ cat.name }}</span>
-    {% else %}
-    <a href="{{ cat.get_absolute_url }}">{{ cat.name }}</a>
-    {% endif %}
-    {% endfor %}
-</nav>

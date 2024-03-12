@@ -9,4 +9,5 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('archive/<yyyy:year>/', views.archive, name='arhive'),
     path('category/<slug:cat_slug>/', views.cats, name='category'),
+    path('searchpart/', views.search, name='search'),
 ]
