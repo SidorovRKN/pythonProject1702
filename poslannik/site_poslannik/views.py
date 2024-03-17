@@ -65,7 +65,7 @@ def search(request):
         'parts': parts,
         'cats': Category.objects.all()
     }
-    return render(request, 'site_poslannik/index.html', data)
+    return render(request, 'site_poslannik/search.html', data)
 
 
 def archive(request, year):

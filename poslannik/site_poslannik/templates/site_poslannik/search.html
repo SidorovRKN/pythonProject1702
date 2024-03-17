@@ -1,11 +1,17 @@
 {% extends 'base.html' %}
-
 {% block content %}
-  <h1>Результаты поиска</h1>
-  {% for part in parts %}
-    <h2>{{ parts.name }}</h2>
-    <p>{{ parts.descr }}</p>
-  {% empty %}
-    <p>Ничего не найдено.</p>
-  {% endfor %}
+<ul>
+    {% for p in parts %}
+    <li>
+        <h2>{{ p.name }}</h2>
+        <p>{{ p.descr }}</p>
+        <p><a href="{{p.get_absolute_url}}">Заказать</a> </p>
+        {% if not forloop.last %}
+        <hr>
+        {%endif%}
+        {% empty %}
+        <p>Ничего не найдено.</p>
+    </li>
+    {% endfor %}
+</ul>
 {% endblock %}
