@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 from django.template.loader import render_to_string
-
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from site_poslannik.models import Parts, Category
 
 # Create your views here.
@@ -14,26 +14,6 @@ menu = [
     {"title": "Войти", "url_name": "login"},
 
 ]
-
-
-def translit(str_ru, sep="-"):
-    t = {'ё': 'yo', 'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ж': 'zh',
-         'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p',
-         'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'c', 'ч': 'ch', 'ш': 'sh',
-         'щ': 'shch', 'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya'}
-    res = ''
-    for i in str_ru.lower():
-        if i in t:
-            res += t[i]
-        elif i not in 'qwertyuiopasdfghjklzxcvbnm1234567890':
-            res += sep
-        else:
-            res += i
-
-    while '--' in res:
-        res = res.replace('--', '-')
-
-    return res
 
 
 def index(request):
@@ -77,38 +57,15 @@ def cats(request, cat_slug):
 
 
 def search(request):
-    q = translit(request.GET.get('q'))
-    req_words = q.split('-')
-    query = ''
-    for word in req_words:
-        temp = Parts.objects.filter(Q(slug__icontains=query + word))
-        if not temp:
-
-            temp = None
-
-            for i in range(len(word)):
-
-                temp_w = Parts.objects.filter(Q(slug__icontains=query + word[:i]))
-                print(temp_w)
-                print(word[:i])
-                if temp_w:
-                    temp = word[:i]
-                else:
-                    break
-
-            query += temp + '-'
-        else:
-            query += word + '-'
-
-    query = query.strip('-')
-    print(query)
+    query_string = request.GET.get('q')
+    parts = Parts.objects.annotate(search=SearchVector('name', 'descr', 'category')).filter(search=query_string)
     data = {
         'title': 'Автозапчасти в Борисове',
         'menu': menu,
-        'parts': Parts.objects.filter(slug__icontains=query),
+        'parts': parts,
         'cats': Category.objects.all()
     }
-    return render(request, 'site_poslannik/index.html', context=data)
+    return render(request, 'site_poslannik/index.html', data)
 
 
 def archive(request, year):

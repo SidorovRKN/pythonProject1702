@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Результаты поиска</h1>
+  {% for part in parts %}
+    <h2>{{ parts.name }}</h2>
+    <p>{{ parts.descr }}</p>
+  {% empty %}
+    <p>Ничего не найдено.</p>
+  {% endfor %}
+{% endblock %}
