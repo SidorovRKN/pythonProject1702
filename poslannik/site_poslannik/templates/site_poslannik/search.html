@@ -1,5 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+    <div class="title">
+        <h1>{{ title }}</h1>
+    </div>
+    <form class="search" action="{% url 'search' %}" method="GET">
+        <input type="text" name="q" placeholder="Поиск...">
+        <button type="submit">Найти</button>
+    </form>
 <ul>
     {% for p in parts %}
     <li>

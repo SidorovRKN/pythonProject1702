@@ -8,13 +8,6 @@
     <link type="text/css" href="{% static 'site_poslannik/css/styles.css' %}" rel="stylesheet" />
 </head>
 <body>
-    <div class="title">
-        <h1>{{ title }}</h1>
-    </div>
-    <form class="search" action="{% url 'search' %}" method="GET">
-        <input type="text" name="q" placeholder="Поиск...">
-        <button type="submit">Найти</button>
-    </form>
 
     <nav class="categories">
         {% for cat in cats %}
@@ -36,7 +29,6 @@
             {%endfor%}
         </ul>
     </div>
-<div class="content">{% block content %} {% endblock %}
-</div>
+<div class="content">{% block content %} {% endblock %}</div>
 </body>
 </html>

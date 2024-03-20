@@ -8,14 +8,14 @@ from .models import Parts, Category
 
 @admin.register(Parts)
 class PartsAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category', 'descr', 'brief_info', 'public', 'slug')
+    list_display = ('name','photo', 'category', 'descr', 'brief_info', 'public', 'slug')
     list_display_links = ('slug', 'name')
     list_editable = ('descr', 'category', 'public')
     list_per_page = 50
     actions = ['set_published', 'hide']
     list_filter = ['category__name', 'public']
     search_fields = ['name', 'category__name']
-    fields = ['name', 'slug', 'descr', 'category', 'public']
+    fields = ['name', 'photo','slug', 'descr', 'category', 'public']
     readonly_fields = ['slug']
 
     @admin.display(description='Кол-во символов описания', ordering='name')

@@ -20,8 +20,10 @@ def index(request):
     data = {
         'title': 'Автозапчасти в Борисове',
         'menu': menu,
-        'parts': Parts.objects.all()[:20],
-        'cats': Category.objects.all()
+        'parts': Parts.objects.all().order_by('name')[:20],
+        'cats': Category.objects.all(),
+        'default_descr': 'Описание товара № XXXXX'
+
     }
     return render(request, 'site_poslannik/index.html', context=data)
 
@@ -34,7 +36,8 @@ def show_part(request, part_slug):
         'name': part.name,
         'menu': menu,
         'part': part,
-        'cats': Category.objects.all()
+        'cats': Category.objects.all(),
+        'default_descr':f'Описание товара № {part.pk}'
     }
 
     return render(request, 'site_poslannik/part.html', context=data)
