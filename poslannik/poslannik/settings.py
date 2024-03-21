@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'debug_toolbar',
     'site_poslannik.apps.SitePoslannikConfig',
+    'accounts.apps.AccountsConfig'
 ]
 
 MIDDLEWARE = [
