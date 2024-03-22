@@ -2,7 +2,7 @@
 {% load poslannik_tags %}
 {% block content %}
     <div class="title">
-        <h1>{{ title }}</h1>
+        <h1>{{ part.name }}</h1>
     </div>
     <form class="search" action="{% url 'search' %}" method="GET">
         <input type="text" name="q" placeholder="Поиск...">
