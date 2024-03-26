@@ -108,3 +108,29 @@ input[type="text"] {
 .product-description {
    align-self: flex-start; /* Выравниваем описание товара вверху контейнера */
 }
+.navbar {
+    display: flex; /* Используем flexbox для расположения элементов в строку */
+    justify-content: space-between; /* Распределяем элементы равномерно по ширине контейнера */
+    align-items: center; /* Выравниваем элементы по вертикали */
+    padding: 10px; /* Добавляем немного отступа вокруг элементов */
+    background-color: #f0f0f0; /* Цвет фона */
+}
+
+
+.page-numbers {
+    display: flex; /* Используем flexbox для расположения элементов в строку */
+}
+
+.page-numbers a {
+    text-decoration: none; /* Убираем подчеркивание ссылок */
+    margin-right: 10px; /* Добавляем немного отступа между номерами страниц */
+    color: #007bff; /* Цвет текста номеров страниц */
+}
+
+.page-numbers a:last-child {
+    margin-right: 0; /* Убираем правый отступ у последнего элемента */
+}
+
+.page-numbers a:hover {
+    text-decoration: underline; /* Добавляем подчеркивание при наведении на номер страницы */
+}

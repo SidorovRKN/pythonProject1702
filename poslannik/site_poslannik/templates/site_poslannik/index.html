@@ -39,4 +39,12 @@
     </li>
 {% endfor %}
 </ul>
+<nav class="navbar">
+    <div class="page-numbers">
+        {% for p in parts.paginator.page_range %}
+            <a href="?page={{p}}">{{p}}</a>
+        {% endfor %}
+    </div>
+</nav>
+
 {% endblock %}

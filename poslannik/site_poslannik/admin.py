@@ -1,22 +1,19 @@
-
 # Register your models here.
 from django.contrib import admin
 from .models import Parts, Category
 
 
-
-
 @admin.register(Parts)
 class PartsAdmin(admin.ModelAdmin):
-    list_display = ('name','photo', 'category', 'descr', 'brief_info', 'public', 'slug')
+    list_display = ('name', 'photo', 'category', 'descr', 'brief_info', 'public', 'slug')
     list_display_links = ('slug', 'name')
     list_editable = ('descr', 'category', 'public')
     list_per_page = 50
     actions = ['set_published', 'hide']
     list_filter = ['category__name', 'public']
     search_fields = ['name', 'category__name']
-    fields = ['name', 'photo','slug', 'descr', 'category', 'public']
-    readonly_fields = ['slug']
+    fields = ['name', 'photo', 'slug', 'descr', 'category', 'public', 'price']
+    # readonly_fields = ['slug']
 
     @admin.display(description='Кол-во символов описания', ordering='name')
     def brief_info(self, part: Parts):

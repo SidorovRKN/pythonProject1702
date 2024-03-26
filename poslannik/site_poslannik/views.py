@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, redirect, get_object_or_404
@@ -6,90 +7,72 @@ from django.urls import reverse
 from django.template.loader import render_to_string
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.views import View
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from site_poslannik.models import Parts, Category
 
+from site_poslannik.utils import DataMixin
+
+
 # Create your views here.
-menu = [
-    {"title": "О нас", "url_name": "about"},
-    {"title": "Контакты", "url_name": "contact"},
-    {"title": "Войти", "url_name": "login"},
 
-]
-
-
-class IndexView(ListView):
+class IndexView(DataMixin, ListView):
     template_name = 'site_poslannik/index.html'
     context_object_name = 'parts'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["menu"] = menu
-        context["cats"] = Category.objects.all()
-        context["title"] = "Автозапчасти в Борисове"
-
-        # костыль пока нет описаний
-        context["default_descr"] = "Описание товара № ХХХХ"
-
         cat_slug = self.kwargs.get('cat_slug')
-        if cat_slug:
-            context["cat_selected"] = cat_slug
-        part_slug = self.kwargs.get('part_slug')
-        if part_slug:
-            context["part"] = Parts.objects.get(slug=part_slug)
-        return context
+        return self.get_mixin_context(context, default_descr="Описание товара № ХХХХ", cat_selected=cat_slug)
 
     def get_queryset(self):
-        cat_slug = self.kwargs.get('cat_slug')
-        if cat_slug:
-            cat_selected = Category.objects.get(slug=cat_slug)
-            return Parts.objects.filter(category=cat_selected).order_by('name')[:20]
-        else:
-            return Parts.objects.all().order_by('name')[:20]
+        cat_slug = self.kwargs.get('cat_slug');
+        query_string = self.request.GET.get('q')
+        parts = self.get_mixin_queryset(cat_slug=cat_slug, query_string=query_string)
+        paginator = Paginator(parts, 20)
+        page_number = self.request.GET.get('page')
+        print(page_number)
+        page = paginator.get_page(page_number)
+        print(page)
+        return page
 
-
-
-class ShowPartView(DetailView):
+class ShowPartView(DataMixin, DetailView):
     model = Parts
     template_name = 'site_poslannik/part.html'
     context_object_name = 'part'
-    slug_field = 'slug'  # Поле в модели, используемое как slug
-    slug_url_kwarg = 'part_slug'  # Имя параметра в URLconf, которое содержит slug
+    slug_url_kwarg = 'slug'
+    slug_field = 'slug'
 
-class AddPartView(View):
-    def get(self, request):
-        data = {
-            'title': f'Добавить запчасть',
-            'menu': menu,
-            'cats': Category.objects.all(),
-        }
-        return render(request, 'site_poslannik/addpart.html', context=data)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        part_slug = self.kwargs.get('slug')
+        part = Parts.objects.get(slug=part_slug)
+        return self.get_mixin_context(context, title=part.name, part=part, default_descr=f"Описание товара № {part.pk}")
 
 
-class AboutView(View):
-    def get(self, request):
-        return render(request, 'site_poslannik/about.html', {'title': 'О нас', 'menu': menu})
+# class AddPartView(View):
+#     def get(self, request):
+#         data = {
+#             'title': f'Добавить запчасть',
+#             'menu': menu,
+#             'cats': Category.objects.all(),
+#         }
+#         return render(request, 'site_poslannik/addpart.html', context=data)
 
 
-class SearchView(View):
-    def get(self, request):
-        query_string = request.GET.get('q')
-        parts = Parts.objects.annotate(search=SearchVector('name', 'descr', 'category')).filter(search=query_string)
-        data = {
-            'title': 'Автозапчасти в Борисове',
-            'menu': menu,
-            'parts': parts,
-            'cats': Category.objects.all()
-        }
-        return render(request, 'site_poslannik/search.html', data)
+class AboutView(DataMixin, TemplateView):
+    template_name = "site_poslannik/about.html"
+    title_page = 'О нас'
+    extra_context = {
+        'cats': Category.objects.all()
+    }
 
 
-class ArchiveView(View):
-    def get(self, request, year):
-        if year > 2023:
-            uri = reverse('cats_slug', args=('bebracat2000',))
-            return redirect(uri)
-        return HttpResponse(f'In {year} year... ')
+# class ArchiveView(View):
+#     def get(self, request, year):
+#         if year > 2023:
+#             uri = reverse('cats_slug', args=('bebracat2000',))
+#             return redirect(uri)
+#         return HttpResponse(f'In {year} year... ')
 
 
 class LoginView(View):
@@ -97,17 +80,21 @@ class LoginView(View):
         return HttpResponse('<h1>Login</h1>')
 
 
-class ContactView(View):
-    def get(self, request):
-        data = {
-            'title': 'Контакты для заказа',
-            'num': '76-36-02',
-            'menu': menu,
-            'email': 'some_email@gmail.com',
-            'cats': Category.objects.all()
-        }
-        return render(request, 'site_poslannik/contact.html', context=data)
+class ContactView(DataMixin, TemplateView):
+    template_name = "site_poslannik/contact.html"
+    title_page = 'Контакты'
+
+    extra_context = {
+        'title': 'Контакты для заказа',
+        'num': '76-36-02',
+        'email': 'some_email@gmail.com',
+        'cats': Category.objects.all()
+    }
 
 
 def page_not_found(request, exception):
     return redirect(IndexView.as_view)
+
+
+def servererror(request):
+    return redirect('home')
